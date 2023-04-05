@@ -8,7 +8,15 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
+
+        },
+        "@schematics/angular:module": {
+
+        },
+        "@schematics/angular:service": {
+          "spec": false
         }
+
       },
       "root": "",
       "sourceRoot": "src",
@@ -28,7 +36,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/bootstrap/scss/bootstrap.scss"
             ],
             "scripts": []
           },
