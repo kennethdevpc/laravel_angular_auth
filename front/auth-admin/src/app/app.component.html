@@ -1,2 +1,35 @@
+<nav class="navbar bg-body-tertiary navbar bg-dark">
+  <div class="container-fluid flex-row">
+    <div class="text-primary">
+      <a class="navbar-brand font-monospace text-light">Navbar</a>
+      <a class="navbar-brand text-light" aria-current="page" routerLink="/home">Home</a>
+      <a class="navbar-brand dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Dropdown
+      </a>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">Action</a></li>
+        <li><a class="dropdown-item" href="#">Another action</a></li>
+        <li>
+          <hr class="dropdown-divider">
+        </li>
+        <li><a class="dropdown-item" href="#">Something else here</a></li>
+      </ul>
+    </div>
+    <div class="flex-row-reverse" >
+      <form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
 
-<router-outlet></router-outlet>
+
+    </div>
+    <a class="navbar-brand text-light" routerLink="/login" *ngIf="!loggedIn">Login</a>
+    <a class="navbar-brand text-light" routerLink="/" *ngIf="loggedIn" (click)="logout()">Logout</a>
+
+  </div>
+</nav>
+
+<div class="container py-3">
+  <router-outlet class=""></router-outlet>
+
+</div>

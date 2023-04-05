@@ -4,6 +4,7 @@ import {PublicComponent} from "./public/public.component";
 import {SecureComponent} from "./secure/secure.component";
 import {HomeComponent} from "./public/home/home.component";
 import {LoginComponent} from "./public/login/login.component";
+import {RegisterComponent} from "./public/register/register.component";
 
 const routes: Routes = [
   { path: '',
@@ -11,6 +12,8 @@ const routes: Routes = [
     children:[
       { path: 'home', component: HomeComponent, data: { title: 'home' }  },
       { path: 'login', component: LoginComponent, data: { title: 'login' }  },
+      { path: 'register', component: RegisterComponent, data: {title: 'register'}}
+
     ]
   },
 

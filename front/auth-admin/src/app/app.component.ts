@@ -1,13 +1,20 @@
-import { Component } from '@angular/core';
-import {faAdjust } from '@fortawesome/free-solid-svg-icons';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'auth-admin';
-  faCoffee = faAdjust;
+  loggedIn: boolean = false;
 
+  ngOnInit() {
+    this.loggedIn = localStorage.getItem('token') !== null;
+
+
+  }
+  logout(){
+    localStorage.removeItem('token');
+  }
 }
