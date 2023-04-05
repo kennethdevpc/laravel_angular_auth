@@ -1,0 +1,884 @@
+1) 
+	c:
+		ng new auth-admin
+		
+2) remove los elementos de testing:
+	u:
+	 /home/kenneth/Documentos/individual_projects/angular_and_laravel_auth/front/
+	 auth-admin/src/app/app.component.spec.ts
+	 
+	 
+3) creo componente:
+	c:
+		ng g c public --skip-tests
+		
+4) para asegurar que archivos spec cli no s egeneren: sin envargo no quizo crear componente y por eso quite eso
+	u:
+	/home/kenneth/projects/front/sae-frontend/angular.json
+	n: 
+	colocar lo siguiente:
+	
+	"@schematics/angular:component": {
+          "style": "scss",
+          "spec": false
+        },
+        "@schematics/angular:module": {
+          "style": "scss",
+          "spec": false
+        },
+        "@schematics/angular:service": {
+          "spec": false
+        }
+        
+ 4) ir a lars rutas y compuiar la ruta del elemento public creado
+ 	u: angular_and_laravel_auth/front/auth-admin/src/app/app-routing.module.ts      
+     
+     
+     
+     	s: 
+     		const routes: Routes = [
+		  { path: '', component: PublicComponent, data: { title: 'Empleados' }  },
+		];
+     
+     
+     
+5) creo componente dentro de otro:
+	c:
+		ng g c public/home --skip-tests
+6) ojo como ya estoy creando elementos dentro de otro lo mejor es que se cree un modulo para que no se acumule todo ese mamotreto
+
+6.1) 
+ 	n: creo moulo de public:
+ 	c: 	
+ 		ng g m public
+
+6.2) en ese elemento declaro al componete.ts 
+	u:/front/auth-admin/src/app/public/public.module.ts
+	s:
+		declarations: [
+    		           PublicComponent,
+     
+ 6.3) como login y home se habian creado mejor eliminelos
+ 6.4) despues de eliminar puede volver a crear el componente de login y home
+ 	c: 
+ 		ng g c public/login --skip-tests
+ 		ng g c public/home --skip-tests
+     	n: automaticamente se pone en :
+     		u:/front/auth-admin/src/app/public/public.module.ts
+     		
+     	n en las declaraciones se pone asi:
+     		
+     		s: declarations: [
+			    PublicComponent,
+			    HomeComponent,
+			    LoginComponent],
+ 6.5) en app routing ya se puede colocar, o dejar las rutas como se tenia:
+  	
+  	{ path: '',
+	    component: PublicComponent,
+	    children:[
+	      { path: 'home', component: HomeComponent, data: { title: 'home' }  },
+	      { path: 'login', component: LoginComponent, data: { title: 'login' }  },
+	    ]
+	  },
+	     
+ 6.6) sin emabrgo si causa error de que no puede leer el <router-outlet>
+   	se debe de colocar entocnes en los modulos:
+   	
+   	u:	src/app/app.module.ts
+   	u2:	src/app/public/public.module.ts
+   	
+   	s:
+   	 	imports: [
+		    RouterModule
+		  ]
+   
+ 7) intalar bootstrap
+ 	c:
+ 		npm i bootstrap  
+ 		
+ 7.1) ira a angular.json:
+ 	s:
+ 	"styles": [
+              "src/styles.scss",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
+              
+              o colocar:
+              
+              "node_modules/bootstrap/scss/bootstrap.scss"
+            ],
+     
+     
+ 8) fontawesome forma1 :
+ 	ng add @fortawesome/angular-fontawesome
+ 	
+8.1) despues de hace esto debo ir al componete de el elemento que quiero que se visualice
+el icono:
+	u: src/app/public/login/login.component.ts
+	
+	s:
+		import {faAdjust } from '@fortawesome/free-solid-svg-icons';
+		
+	n: en la clase debo crear ese icono para luego usarlo en el elemento html
+	
+	s:  faCoffee = faAdjust;
+	
+	n: para usarlo:
+	
+	u: src/app/public/login/login.component.html
+	s: <fa-icon [icon]="faCoffee"></fa-icon>
+ 	 
+     
+     
+   8.2) fontawesome forma2: 
+   
+   
+    link de cdn: https://cdnjs.com/libraries/font-awesome
+    
+    n: copio el tag css:
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    
+    n: y lo pego en el head del index principal :
+    u: src/index.html
+    
+    n: copio el tag js 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" integrity="sha512-fD9DI5bZwQxOi7MhYWnnNPlvXdp/2Pj3XSTRrFs5FQa4mizyGLnJcN6tuvUS6LbmgN1ut+XGSABKvjN0H6Aoow==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    n: lo ubico en el final del body
+    u: src/index.html
+    
+    n: ahor apra usarlo puedo usarlo en cualquier html: solo uso icono fontawesome
+    
+    s:
+    
+    <button>hola <i class="fa-regular fa-user"></i></button>
+
+    
+    
+   9) para poder colocar por ejemplo links a login y home:
+   n: se usa en vexz de href, routerLink ya que se debe hacer qu eno se refresque la pantalla por eso se pone routerlink.
+   * href recarga la página, por lo que se pierde el estado, y que routerLink no recarga la página, por lo que no pierdes ningún estado.
+   
+   s:	
+   	 <a class="navbar-brand" routerLink="/login">Login</a>
+   	 
+   	 
+   10)  se debe colocar en el componente.ts donde se va a crear el formulario lo siguiente:
+   
+   u:	src/app/public/login/login.component.ts
+   
+   s: 	
+   	public form!: FormGroup;
+   	constructor(private fb: FormBuilder,private http: HttpClient) { }
+    	 ngOnInit(): void {
+	    this.form=this.fb.group({
+	      email:'',
+	      password:'',
+	    })
+	  }
+	  
+	  //la fucnion submit 
+	    submit(){
+    		console.log(this.form.getRawValue());
+		    const formData= this.form.getRawValue()
+		    const data= {
+		      username: formData.email,
+		      password:	formData.password,
+		      grant_type:	"client_credentials", //oho aqui es esto o 
+		       grant_type:	"password",  //password siempre y cuando password sea "pasword"
+		      client_secret:	"HxRjM7vHFPKVIZYee9n9sZbzMDk7D2aLnTE2xwsq",
+		      scope:		"*",
+		      client_id:	2
+		    }
+		    this.http.post('http://127.0.0.1:8000/oauth/token',data).subscribe(
+		      result=>{
+			console.log('seuccesdull')
+			console.log('resultado: ',result);
+		      },error => {
+			console.log('error')
+			console.log('error: ',error);
+
+		      }
+		    );
+		  }
+		  
+10.1) luego en el componente html:
+	u: src/app/public/login/login.component.html
+	s: 
+		<form [formGroup]="form" class="form " (submit)="submit()">
+
+10.2) como esto hace llamado de formularios  y tambien llamado a la api con http:
+	debo de importar esos elementos:
+	
+	u: 
+		src/app/public/public.module.ts
+	
+	s:
+		imports: [
+		    ReactiveFormsModule,
+		    HttpClientModule
+		    
+		  
+11) ahora debo mirar lo de las cors ahora voy a la seccion 12 del bakcend.
+	
+	
+despues de back 	  
+
+12) despues voy al frontend14) 
+	u: src/app/public/login/login.component.ts
+	
+	importar en el contructor:
+	s:
+	 private router: Router 
+	 
+	 n: y despues en la peticion ala api guardo el token en el localstorage
+	  y me redirijo ala ruta "secure"
+	  
+	s:
+		this.http.post('http://127.0.0.1:8000/oauth/token',data).subscribe(
+		      (result:any)=>{
+		  //setiar en el locarstorage el token:
+			localStorage.setItem('token', result.access_token);
+			this.router.navigate(['/secure']);
+
+			console.log('seuccesdull')
+			console.log('resultado: ',result);
+		      },
+12.1) ahora el archivo public solo queda con <router-outlet>
+	u: src/app/public/public.component.html
+y lo que habia ahi se pasa mejor a el archivo app.component.html:
+	u: src/app/app.component.html
+
+13) ahora en secure coloco:
+	u: src/app/secure/secure.component.ts
+	
+	s: 
+	ngOnInit(): void {
+	    const headers = new HttpHeaders({
+	      'Authorization': `Bearer ${localStorage.getItem('token')}`
+	    })
+	    this.http.get('http://127.0.0.1:8000/user', {headers: headers}).subscribe(
+	      result => {
+		console.log(result)
+		this.user = result;
+
+	      },
+		
+
+13.1) y en el coponente html:
+	u: src/app/secure/secure.component.html
+	s: 
+	 
+		<div *ngIf="user">
+		  <p>Welcome</p>
+		  <p>{{user.name}}</p>
+		  <p>{{user.last_name}}</p>
+
+		</div>
+
+	  
+14) ahor aen 
+	U: src/app/app.component.ts
+	s: 
+	 
+	 loggedIn: boolean = false;
+
+	 ngOnInit() {
+	    this.loggedIn = localStorage.getItem('token') !== null;
+
+
+	  }
+	 logout(){
+	    localStorage.removeItem('token');
+	  }
+14.1 en html:
+	u: src/app/app.component.html
+	s:
+		<a class="navbar-brand text-light" routerLink="/login" 
+		*ngIf="!loggedIn">Login</a>
+    		<a class="navbar-brand text-light" routerLink="/"
+    		*ngIf="loggedIn" (click)="logout()">Logout</a>	   		  
+		  
+
+15) ahora :
+	u:
+		src/app/secure/secure.component.ts	
+	
+	
+	s:
+		//en el constructor:
+		
+		constructor(private http: HttpClient, private router:Router) {  }
+		
+		// peticion http:
+		
+	 	this.http.get('http://127.0.0.1:8000/user', {headers: headers}).subscribe(
+	      result => {
+		console.log("result:--",result)
+		this.user = result;
+
+	      },
+
+	      error => { //este error sale si se deja en el api como en el punto 
+		
+			localStorage.removeItem('token');
+			this.router.navigate(['/login']);
+
+	    	)
+	
+	n: ojo que el error aqui funciona si:
+	
+	n: //este error sale si se deja en el api por defecto como en el punto 
+	13.4.2) ojojojojojojojoj 
+		  
+16) creo el componenten de registro
+	c:
+		 ng g c register --skip-tests 
+
+16.1) creo formulario (html y componte ts dentro de carpeta pulic:
+	c: ng g c public/register --skip-tests
+
+	u: src/app/public/register
+16.1.1) ojo el componente de register debe de colocarse para validar lo siguiente:
+	u:src/app/public/register/register.component.ts
+	s: 
+		ngOnInit(): void {
+		    this.form=this.fb.group({
+		      name:['',Validators.required],
+		      last_name:['',Validators.required],
+		      email:['', [Validators.required,Validators.email]],
+		      password:['',Validators.required,],
+		      password_confirmation:['',Validators.required],
+		    })
+		  }	
+		  
+	n: sino se coloca asi el email, entonces produce un error:
+	error:
+	
+	ERROR Error: NG01101: Expected async validator to return Promise or Observable. Are you using a synchronous validator where an async validator is expected?
+	
+	solucion: 
+	
+	se debe cambiear esto:
+	
+	s:       email:['', Validators.required,Validators.email],
+	
+	po esto:
+	s: 
+		email:['', [Validators.required,Validators.email]],
+	
+	
+	
+16.2) voy a la api y tengo que crrear en el controlador la ruta de registro:punto 15 api
+
+	u: 
+	s:  php artisan make:request UserRegisterRequest
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+    _______________________________________________
+    _______________________________________________
+    
+    
+solucion de error en angular:
+
+
+error : 
+Watchpack Error (watcher): Error: ENOSPC: System limit for number of file watchers reached, watch '/home/kenneth/Documentos/individual_projects/angular_and_laravel_auth/front/auth-admin/node_modules/@types/node/ts4.8'
+
+
+pasos: 
+	1) ir al archivo sysctl.conf :
+	
+		sudo nano /etc/sysctl.conf
+		
+		n: y agregar
+		
+		s:
+			fs.inotify.max_user_watches = 524288
+
+
+	2) ejecutar :
+		c: sudo sysctl -p --system
+      
+    
+ ================================================================================ ================================================================================ ================================================================================
+ mysql: mysql -u root -p 
+ 
+ laravel
+ 
+ instalar composer y laravel 
+ 
+ 1) ir a el archivo: para eliminar el 'api' del link
+ 	u: 
+ 	api-auth/app/Providers/RouteServiceProvider.php
+ 
+ 	n: comentar :
+ 	
+ 	s:  // ->prefix('api')
+ 	
+ 	    /*Route::middleware('web')
+                ->group(base_path('routes/web.php'));*/
+ 	
+ 
+ 
+ 2) archivo api:
+ 
+ 	u: api-auth/routes/api.php
+ 	n: comentar
+ 	
+ 	s: 
+ 		/*Route::middleware('auth:sanctum')->get('/user', 
+ 		function (Request $request) {    return $request->user();});*/
+ 		
+ 2b) u:api-auth/routes/api.php	
+ 
+ 	n: colocar para probar:
+ 	
+ 	s:
+	 	Route::get('/',function (){
+		    return "hola";
+		});
+ 
+ 3)  php artisan make:controller UserController
+ 	crear una funcion index:
+ 	s:
+ 		 public function index(){
+			return 'hola mundo ';
+		    }
+4) ahor aen el api:
+	U: api-auth/routes/api.php
+	n : qitar esa funcion de hoal y puede ahora colocar el controlador:
+	colocar:
+	s:
+		Route::get('/','App\Http\Controllers\UserController@index');
+ 
+5) ir a la migracion y agregar un campito de apellido:
+	u: database/migrations/2014_10_12_000000_create_users_table.php
+	s:  $table->string('name');
+            $table->string('last_name');
+            $table->string('email')->unique();
+ 
+8) creo base de datos en php admin:
+ 	nombre: api_auth
+ 	
+9) lo configuro en .env 
+
+10) creadndo un seeder para fakedata:
+	c: 
+		php artisan make:seeder UsersTableSeeder
+
+10.1) u:api-auth/database/seeders/UsersTableSeeder.php
+	n: queiro crear 20 usuarios:
+	
+	s: 
+		  factory(User::class, 20 )->create();	
+	ojo : para la version mas nueva:
+	
+	s: 	
+		\App\Models\User::factory()->count(30)->create();
+		  
+10.2) u: api-auth/database/factories/UserFactory.php	
+
+	n: ahora en los factory coloco como queiero que se coloque esa informacion 
+	elimino el de confirmacion de email.
+	
+	s: 
+		return [
+            'name' => fake()->name(),
+            'last_name' => fake()->lastName(),
+		
+10.3 ahora ejecuto el comando qe ejecuta los seeders
+	c: 
+	  php artisan db:seed --class=UsersTableSeeder
+
+
+_____________________
+
+11) autenticacno don laravel passport:
+
+https://laravel.com/docs/10.x/passport#main-content
+
+1.1) 
+	c: 
+	composer require laravel/passport
+	
+	c:
+	php artisan migrate 
+	
+	c:
+	php artisan passport:install
+	
+	
+	me dio lo siguinete: 
+	hXuVfKcNn0zvhfGxwWQEoEgG50vVr8K7Zp5tnDNa
+	
+	HxRjM7vHFPKVIZYee9n9sZbzMDk7D2aLnTE2xwsq
+	
+1.2) EN EL .env
+	
+	s:
+		CLIENT_1=hXuVfKcNn0zvhfGxwWQEoEgG50vVr8K7Zp5tnDNa
+		CLIENT_2=HxRjM7vHFPKVIZYee9n9sZbzMDk7D2aLnTE2xwsq
+
+1.3) en el modelo User usar HasApiTokens
+	u: api-auth/app/Models/User.php
+
+	s:  use HasApiTokens, HasFactory, Notifiable;
+	
+
+1.4) voy a :
+	u: api-auth/app/Providers/AuthServiceProvider.php
+	
+	
+	n: para version 11 en adelante no se hace esto de colocar:
+	s: 
+	  
+	    public function boot(): void
+	    {
+		//
+		Passport::routes();
+	    }
+	   
+	n: ojo: If you dont want to use default passport routes. you can disabled 
+	   the route in register method inside "AppServicerProvider"
+	   
+		public function register()
+		{
+		   Passport::ignoreRoutes();
+		}
+	
+	
+1.5) voy a el auth y coloco el api en password 
+
+	U : 	api-auth/config/auth.php
+	
+ 	s:
+	  'guards' => [
+		'web' => [
+		    'driver' => 'session',
+		    'provider' => 'users',
+		],
+		'api' => [
+		    'driver' => 'password',
+		    'provider' => 'users',
+		],
+	    ],	
+	
+	
+	Lorenzo Towne
+	
+	
+1.6) en la peticion post: 
+	error:
+	{
+	    "error": "invalid_grant",
+	    "error_description": "The user credentials were incorrect.",
+	    "message": "The user credentials were incorrect."
+	}
+	
+	//_______________soluciones
+	https://stackoverflow.com/questions/71194327/getting-invalid-grant-error-while-generating-access-token-using-laravel-passport
+	https://help.akana.com/content/current/cm/api_oauth/aaref/Ref_OAuth_ClientAuthenticationWithOAuthProvider.htm
+	https://help.akana.com/content/current/cm/api_oauth/oauth_oauth20/m_oauth20_getTokenPOST.htm
+	
+	mejor resultado: 
+	https://stackoverflow.com/questions/60123601/laravel-passport-invalid-grant-for-password-grant-type
+	
+	"grant_type":client_credentials
+	
+	username = email
+	password = secret  //ojo aqui no es secret es: "password" as it is stated here, from the 5.8 version the default password "secret" has beeen updated to "password". so you are entering the old password.
+	
+	grant_type =password
+	client_id = 2
+	client_secret = HxRjM7vHFPKVIZYee9n9sZbzMDk7D2aLnTE2xwsq
+	scope = *
+	
+1.7) ir al forntend y crear el formulario de peticion ir a la seccion 10) arriba en front
+ 
+ despues del front:
+ 12) arreglando lo del las cors:
+ 	c:
+ 		composer require fruitcake/laravel-cors
+ 	error: 
+ 	
+ 	Info from https://repo.packagist.org: #StandWithUkraine
+	Using version ^3.0 for fruitcake/laravel-cors
+	./composer.json has been updated
+	Running composer update fruitcake/laravel-cors
+	Loading composer repositories with package information
+	Updating dependencies
+	Your requirements could not be resolved to an installable set of packages.
+
+ 	Problem 1
+ 	
+	    - Root composer.json requires fruitcake/laravel-cors ^3.0 -> satisfiable 
+	    by fruitcake/laravel-cors[v3.0.0].
+	    - fruitcake/laravel-cors v3.0.0 requires illuminate/support ^6|^7|^8|^9 -> 
+	    found illuminate/support[v6.0.0, ..., v6.20.44, v7.0.0, ..., v7.30.6,
+	     v8.0.0, ..., v8.83.27, v9.0.0, ..., v9.52.5] but these were not loaded, 
+	     likely because it conflicts with another require.
+
+	You can also try re-running composer require with an explicit 
+	version constraint, e.g. "composer require fruitcake/laravel-cors:*" to figure
+	 out if any version is installable, or "composer require fruitcake/laravel
+	 -cors:^2.1" if you know which you need.
+
+	Installation failed, reverting ./composer.json and ./composer.lock to
+	 their original content
+ 
+ 
+ 	n:
+ 		entonces al revisar todo me di cuenta que uno de los problemas era: 
+		eliminar y reinstalar corns:
+ 	paso1
+ 	c:
+ 		composer remove barryvdh/laravel-cors fruitcake/laravel-cors
+	c:
+		composer require fruitcake/laravel-cors
+		
+ 	sin embargo persiste el error y hago lo siguiente:
+ 	
+ 
+ 	paso2: 
+ 	
+ 	finalmente: voy a la siguiente ubicacion :
+ 		u: 	api-auth/config/cors.php
+ 		
+ 		s:
+ 			    'paths' => ['api/*','sanctum/csrf-cookie'],
+ 		n: le agrego:
+ 			    'paths' => ['api/*','/*', 'sanctum/csrf-cookie'],
+ 
+ 
+ 
+ -----------------
+ 
+ 13) 
+ 13) despues creo la ruta de usuarios:
+	u: api-auth/routes/api.php
+		s:
+		Route::get('/user','App\Http\Controllers\UserController@user')
+		->middleware('auth:api');
+
+13.1) despues en el controlador colocar la funcion:
+	u: api-auth/app/Http/Controllers/UserController.php
+	s:
+	  public function user(Request $request){
+		dd("aui");
+	    }
+
+13.2) al consultar la ruta de usuario me da el siguiente error:
+	error:
+	
+	InvalidArgumentException: Auth driver [password] for guard [api] is not defined.
+	 in file /opt/lampp/htdocs/api-auth/vendor/laravel/framework/src/Illuminate/Auth
+	 /AuthManager.php on line 99
+
+	solucion:
+	https://stackoverflow.com/questions/73031735/laravel-auth-guard-api-is-not-defined
+	
+	ahora en la ubicacion siguiente:
+	u: api-auth/config/auth.php
+	
+	s: 
+		'guards' => [
+		'web' => [
+		    'driver' => 'session',
+		    'provider' => 'users',
+		],
+		'api' => [
+		    'driver' => 'passport',
+		    'provider' => 'users',
+		],
+		
+13.3) sin emabrgo ahora me sale este otro error:
+	error: 
+	
+	Symfony\Component\Routing\Exception\RouteNotFoundException: Route [login] 
+	not defined. in file /opt/lampp/htdocs/api-auth/vendor/laravel/framework/src
+	/Illuminate/Routing/UrlGenerator.php on line 467
+	
+	
+	solucion: esto signifia que como no se puede autenticar lo redirije 
+	a login pero como no lo he creado pues obvimente no lo va encontrar.
+	
+	n: si me dirijo a esta ubicacion y quito el codigo de ese mensaje me retorna 
+	
+	u: api-auth/app/Http/Middleware/Authenticate.php
+	s:   
+		// return $request->expectsJson() ? null : route('login');
+        	return("");
+        	
+        n: entonces retorna un eror nuevo:
+        	
+	{
+	    "error": "Unauthenticated.",
+	    "0": 0
+	}
+	
+	solucion: 
+	
+	ahora solo queda es mandar en el header el token:
+	
+	forma1) 
+	
+	en postman:   http://127.0.0.1:8000/user
+	u: headers
+	Authorization  = "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJyresto_de_token"
+	
+	forma2) 
+	metodo 2 es en authorization : 
+	1) seleccionar bearer token
+	2) pegar el token creado.
+	
+
+
+	Cosas que si quiero no son necesarias: 
+	
+	13.4) le movi algo aqui en esto:
+		u: api-auth/app/Http/Kernel.php
+		 n: pero no jhace diferencia alguna:
+		 s:
+		    // 'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+
+	13.4.1) en el manejador de excepciones le coloque esto para que diga 
+	el error mas lejible y en json:
+
+		u: api-auth/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php
+		s:
+		   public function render($request, Throwable $e)
+		    {
+			return response(['error'=> $e->getMessage(),$e->getCode()]?:400);
+	13.4.2) ahora si el error queda asi:
+		error:
+	n: 
+		{
+	    "error": "Auth driver [password] for guard [api] is not defined.",
+	    "0": 0
+	}
+	
+	13.4.2) ojojojojojojojoj : 
+	pero su le coloca : 
+	////return response(['error'=> $e->getMessage(),$e->getCode()]?:400);
+	 en el fornt no puede hacer uso del error por lo tanto es mejor no usarlo asi.
+	 y dejarlo como viene por defecto
+	
+	
+	
+14) voy al fronend
+ 
+15) despues de fronend punto 16.2
+	
+	c:
+	php artisan make:request UserRegisterRequest
+	
+15.1) modifico el request:
+	u: api-auth/app/Http/Requests/UserRegisterRequest.php
+	s:
+		public function authorize(): bool
+		    {
+			return true;
+		    }
+ 	  	 public function rules(): array
+		    {
+			return [
+			    'name'=> 'required',
+			    'email'=> 'required|email',
+			    'password'=> 'required|confirmed|min:6',
+			    //
+			];
+			
+			//forma2:
+			return [
+			    'name'=> 'required',
+			    'last_name'=> 'required',
+			    'email'=> 'required|email',
+			    'password'=> 'required|max:6|confirmed',
+			    'password_confirmation' => 'required|same:password',
+			   
+			];
+			
+		    }
+ 
+ 
+ 15.2) creo en el controlaor lo siguiente:
+ 	U: api-auth/app/Http/Controllers/UserController.php
+ 	s:
+ 		//importar:
+ 		
+ 		use Illuminate\Support\Facades\Hash;
+
+ 	     public function register(UserRegisterRequest $request){
+		User::create(
+		    [
+		        'name'=> $request->name,
+		         'last_name'=> $request->last_name,
+		        'email'=> $request->email,
+		        'password'=>Hash::make( $request->password),
+		    ]
+		);
+		return 'User created successfully!';
+
+		return( $request->user());
+	    }
+	 
+ 16) ojo para que todo funcione de una manera bonita tanto en el back como en el front se debe h¿modificar el a¿rchivo handler:
+ 
+ 	u: api-auth/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php
+ 	
+ 	
+ 	nota importante: si en el back en el postman al hacer un llamado me manda 
+ 	o me redirecciona al local host significa que hay una scepcion y el handler lo maneja de esa manera, pero yo puedo configurar el handlr a mi gusto para que no pase eso.
+ 	
+ 	sin emabrgo desde angular o desde el front, lo que pasa es que el redirecciona pero 
+ 	el angular si logra detectar el error y lo toma como el error.
+ 	entocnces si deseo mostrar los datos desde el postman:
+ 	puedo agregar la linea de codigo en la funcion
+ 	funcion: public function render($request, Throwable $e) linea 389
+ 	
+ 	s: 
+	 	if ($e instanceof ValidationException) {
+		    return response()->json([
+		        'message' => $e->getMessage(),
+		        'errors' => $e->errors(),
+		    ], $e->status);
+		}
+		return response(['error' => $e->getMessage(), $e->getCode()] ?: 400);
+	 	
+ 	nota: 
+ 	entonces si se deja por defecto sin este codigo lo que pasa es que en postman me va 
+ 	a redireccionar ala ruta anterior, y el angular si puede igual seguir leyendo el 
+ 	error de validacion  del punto 15.1)
+ 	
+ 	pero si se agrega el codigo antes de "return match (true) {" entonces podra ver 
+ 	en postman y en angular los errores.
+ 	sin embago en el angular no mostrara ni enviara el status como es por lo cual no se podra ver si hay error facilmente. lo mejor es dejarlo por defecto y en caso de pruebas con postman ponerlo
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 
+  ================================================================================ ================================================================================ ================================================================================ ================================================================================   
+    
+    
+   
